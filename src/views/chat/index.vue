@@ -11,7 +11,7 @@ import { useChat } from './hooks/useChat'
 import { useCopyCode } from './hooks/useCopyCode'
 import { useUsingContext } from './hooks/useUsingContext'
 import HeaderComponent from './components/Header/index.vue'
-import { HoverButton, SvgIcon } from '@/components/common'
+import { HoverButton, SvgIcon, QrcodeDialog } from '@/components/common'
 import { useBasicLayout } from '@/hooks/useBasicLayout'
 import { useChatStore, usePromptStore } from '@/store'
 import { fetchChatAPIProcess } from '@/api'
@@ -556,5 +556,6 @@ onUnmounted(() => {
         </div>
       </div>
     </footer>
+    <QrcodeDialog></QrcodeDialog>
   </div>
 </template>
