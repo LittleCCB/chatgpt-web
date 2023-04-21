@@ -79,6 +79,9 @@ watch(
         <div class="flex-1 min-h-0 pb-4 overflow-hidden">
           <List />
         </div>
+        <div class="p-4 pb-0" style="text-align: center;">
+          <a href="https://github.com/LittleCCB/wx-bot-client">ChatGPT接入微信工具开源项目</a>
+        </div>
         <div class="p-4">
           <NButton block @click="show = true">
             {{ $t('store.siderButton') }}
