@@ -484,7 +484,7 @@ onUnmounted(() => {
           <template v-if="!dataSources.length">
             <div class="flex items-center justify-center mt-4 text-center text-neutral-300">
               <SvgIcon icon="ri:bubble-chart-fill" class="mr-2 text-3xl" />
-              <span>Aha~</span>
+              <span>您好，欢迎使用ChatGPT，游客身份限制提问频率，<a href="#/register" class="text-blue-500" target="_blank" >注册请点这里</a>，如果你已经有账号，请<a href="#/login" class="text-blue-500" target="_blank" >点击这里</a>或者点击头像登录~~</span>
             </div>
           </template>
           <template v-else>
