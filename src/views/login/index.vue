@@ -1,85 +1,91 @@
 <script setup lang='ts'>
-import { ref } from "vue";
-import { NForm, NFormItem, NInput, NButton, useMessage } from "naive-ui";
-
-const message = useMessage();
+import { ref } from 'vue'
+import { NButton, NForm, NFormItem, NInput, useMessage } from 'naive-ui'
+import { login } from '@/api'
+const message = useMessage()
 const formValue = ref({
-  phone: "",
-  password: ""
-});
+  phone: '',
+  pwd: '',
+})
 
 const rules = {
   phone: [
-    { required: true, message: "手机号不能为空", trigger: ["blur"] },
+    { required: true, message: '手机号不能为空', trigger: ['blur'] },
     {
       pattern: /^1[0-9]{10}$/,
-      message: "请输入正确的手机号",
-      trigger: ["input", "blur"],
+      message: '请输入正确的手机号',
+      trigger: ['input', 'blur'],
     },
   ],
   password: [
-    { required: true, message: "密码不能为空" },
-    { min: 6, max: 20, message: "密码长度应为6-20位", trigger: ["input"] },
+    { required: true, message: '密码不能为空' },
+    { min: 6, max: 20, message: '密码长度应为6-20位', trigger: ['input'] },
   ],
-};
+}
 
-const formRef = ref<any>(null);
+const formRef = ref<any>(null)
 
-function validateForm() {
-  return formRef.value.validate((errors: any) => {
-    if (errors) {
-      throw Error("校验失败");
-    }
-  });
+async function validateForm() {
+  try {
+    return await formRef.value.validate(async (errors: any) => {
+      const { data } = await login(formValue.value)
+      return Promise.resolve(data)
+    })
+  }
+  catch (error) {
+    return Promise.reject(error)
+  }
 }
 
 async function handleSubmit() {
   try {
-    await validateForm();
-    message.success("验证成功");
+    const data = await validateForm()
+    console.log(data)
+    message.success('验证成功')
     // 提交注册表单的逻辑
-  } catch (error) {
-    console.log(error);
-    message.error("验证失败");
+  }
+  catch (error) {
+    message.error('验证失败')
   }
 }
 </script>
-	
-	<template>
+
+<template>
   <div class="login">
-    <NForm :model="formValue" :rules="rules" style="min-width: 320px;" ref="formRef">
+    <NForm ref="formRef" :model="formValue" :rules="rules" style="min-width: 320px;">
       <div class="logo">
-        <img src="@/assets/pwa-512x512.png" alt="logo" />
+        <img src="@/assets/pwa-512x512.png" alt="logo">
       </div>
       <NFormItem label="手机号" path="phone">
         <NInput
-          size="large"
           v-model:value="formValue.phone"
+          size="large"
           placeholder="请输入手机号"
-        ></NInput>
+        />
       </NFormItem>
-      <NFormItem label="密码" path="password">
+      <NFormItem label="密码" path="pwd">
         <NInput
+          v-model:value="formValue.pwd"
           size="large"
           type="password"
-          v-model:value="formValue.password"
           placeholder="请输入密码"
-        ></NInput>
+        />
       </NFormItem>
       <NFormItem style="text-align: center">
-        <n-button
+        <NButton
           style="width: 100%"
           size="large"
           type="primary"
           @click="handleSubmit"
-          >登录</n-button
         >
+          登录
+        </NButton>
       </NFormItem>
     </NForm>
   </div>
 </template>
-	
-	<style scoped lang="less">
+
+<style scoped lang="less">
 .login {
   margin: 0 auto;
   height: 100vh;
