@@ -46,18 +46,19 @@ onMounted(() => {
       </h2>
       <div class="p-2 space-y-2 rounded-md bg-neutral-100 dark:bg-neutral-700">
         <p>
-          此项目开源于
+          此项目搭建教程,欢迎点击加入知识星球获取：
           <a
             class="text-blue-600 dark:text-blue-500"
-            href="https://github.com/Chanzhaoyu/chatgpt-web"
+            href="https://t.zsxq.com/0c8ZrSR0z"
             target="_blank"
           >
-            GitHub
+            ChatGPT风口软件变现
           </a>
-          ，免费且基于 MIT 协议，没有任何形式的付费行为！
-        </p>
-        <p>
-          如果你觉得此项目对你有帮助，请在 GitHub 帮我点个 Star 或者给予一点赞助，谢谢！
+          本程序完全开源，只需简单搭建即可，<a
+            class="text-blue-600 dark:text-blue-500"
+          >
+            教程已经更新到星球哦，先到先得！
+          </a>
         </p>
       </div>
       <p>{{ $t("setting.api") }}：{{ config?.apiModel ?? '-' }}</p>
