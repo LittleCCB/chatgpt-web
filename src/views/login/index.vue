@@ -76,7 +76,6 @@ async function handleSubmit() {
       <NFormItem label="密码" path="pwd">
         <NInput
           v-model:value="formValue.pwd"
-          v-model:value="formValue.pwd"
           size="large"
           type="password"
           placeholder="请输入密码"
