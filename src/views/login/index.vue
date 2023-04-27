@@ -1,4 +1,5 @@
 <script setup lang='ts'>
+<<<<<<< HEAD
 import { ref } from 'vue'
 import { NButton, NForm, NFormItem, NInput, useMessage } from 'naive-ui'
 import { login } from '@/api'
@@ -7,6 +8,18 @@ const formValue = ref({
   phone: '',
   pwd: '',
 })
+=======
+import { ref } from "vue";
+import { NForm, NFormItem, NInput, NButton, useMessage } from "naive-ui";
+import { login } from '@/api/userApi';
+import { router } from "@/router";
+
+const message = useMessage();
+const formValue = ref({
+  phone: "",
+  pwd: ""
+});
+>>>>>>> origin/bai_dev
 
 const rules = {
   phone: [
@@ -17,9 +30,9 @@ const rules = {
       trigger: ['input', 'blur'],
     },
   ],
-  password: [
-    { required: true, message: '密码不能为空' },
-    { min: 6, max: 20, message: '密码长度应为6-20位', trigger: ['input'] },
+  pwd: [
+    { required: true, message: "密码不能为空" },
+    { min: 6, max: 20, message: "密码长度应为6-20位", trigger: ["input"] },
   ],
 }
 
@@ -39,13 +52,19 @@ async function validateForm() {
 
 async function handleSubmit() {
   try {
-    const data = await validateForm()
-    console.log(data)
-    message.success('验证成功')
+    await validateForm();
     // 提交注册表单的逻辑
-  }
-  catch (error) {
-    message.error('验证失败')
+    const { data } = await login(formValue.value);
+    console.log(data);
+    if (data.success) {
+      message.success("登录成功！");
+      router.push('/');
+    } else {
+      message.error(data.message);
+    }
+  } catch (error) {
+    console.log(error);
+    message.error("验证失败");
   }
 }
 </script>
@@ -68,6 +87,7 @@ async function handleSubmit() {
           v-model:value="formValue.pwd"
           size="large"
           type="password"
+          v-model:value="formValue.pwd"
           placeholder="请输入密码"
         />
       </NFormItem>
