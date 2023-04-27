@@ -1,6 +1,8 @@
 <script setup lang='ts'>
 	import { onMounted, ref } from 'vue'
 	import { NModal } from 'naive-ui'
+	import request from '@/utils/request/usersReq'
+
 	const showModal = ref(false)
 	const windowWidth = ref(0)
 	
@@ -17,6 +19,9 @@
 	onMounted(() => {
 	  showModal.value = true
 	  windowWidth.value = window.innerWidth
+	  request.get('/memberships/getVipPrice').then((res:any)=>{
+		console.log(res);
+	  })
 	})
 	</script>
 	
