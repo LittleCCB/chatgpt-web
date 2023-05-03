@@ -1,6 +1,7 @@
 import type { AxiosProgressEvent, AxiosResponse, GenericAbortSignal } from 'axios'
+import { computed, ref } from 'vue'
 import request from './axios'
-import { useAuthStore } from '@/store'
+import { useAuthStore, useUserStore } from '@/store'
 
 export interface HttpOption {
   url: string
@@ -46,7 +47,14 @@ function http<T = any>(
   method = method || 'GET'
 
   const params = Object.assign(typeof data === 'function' ? data() : data ?? {}, {})
+  const userStore = useUserStore()
+  const userInfo = computed(() => userStore.userInfo)
 
+  const tokenName = ref(userInfo.value.tokenName ?? 'satoken')
+  const tokenValue = ref(userInfo.value.tokenValue ?? 'none')
+  const defaultHeaders: Record<string, any> = {}
+  defaultHeaders[tokenName.value] = tokenValue.value
+  headers = { ...(defaultHeaders as Record<string, any>), ...headers }
   return method === 'GET'
     ? request.get(url, { params, signal, onDownloadProgress }).then(successHandler, failHandler)
     : request.post(url, params, { headers, signal, onDownloadProgress }).then(successHandler, failHandler)

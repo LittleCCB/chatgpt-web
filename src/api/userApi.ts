@@ -1,5 +1,5 @@
-import reuqest from '@/utils/request/usersReq';
-import { RegisterType, LoginType, SendSmsType } from '@/typings/user';
+import reuqest from '@/utils/request/usersReq'
+import type { LoginType, RegisterType, SendSmsType } from '@/typings/user'
 
 export const register = (data: RegisterType) => {
   return reuqest.post('/user/register', data)

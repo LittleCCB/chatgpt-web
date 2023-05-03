@@ -1,10 +1,12 @@
 <script setup lang='ts'>
 import { ref } from 'vue'
 import { NButton, NForm, NFormItem, NInput, useMessage } from 'naive-ui'
+import { useUserStore } from '@/store'
 import { login } from '@/api/userApi'
 import { router } from '@/router'
-
 const message = useMessage()
+const userStore = useUserStore()
+
 const formValue = ref({
   phone: '',
   pwd: '',
@@ -44,8 +46,19 @@ async function handleSubmit() {
     await validateForm()
     // 提交注册表单的逻辑
     const { data } = await login(formValue.value)
-    console.log(data)
     if (data.success) {
+      const baseUserData = data.data.baseUserData
+      const loginToken = data.data.loginToken
+      const userIdentityInfo = data.data.userIdentityInfo
+      const newUserInfo = {
+        avatar: baseUserData.attr,
+        name: baseUserData.username,
+        vipType: baseUserData.vipType,
+        tokenName: loginToken.tokenName,
+        tokenValue: loginToken.tokenValue,
+        endDate: userIdentityInfo.endDate,
+      }
+      userStore.updateUserInfo(newUserInfo)
       message.success('登录成功！')
       router.push('/')
     }

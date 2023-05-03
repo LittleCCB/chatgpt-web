@@ -6,6 +6,10 @@ export interface UserInfo {
   avatar: string
   name: string
   description: string
+  vipType: String
+  tokenName: String
+  tokenValue: String
+  endDate: String
 }
 
 export interface UserState {
@@ -18,6 +22,10 @@ export function defaultSetting(): UserState {
       avatar: 'https://oss-chatgpt.oss-cn-beijing.aliyuncs.com/attr/%E5%A4%B4%E5%83%8F.jpg',
       name: '程序员小野',
       description: '星球： <a href="https://t.zsxq.com/0c8ZrSR0z" class="text-blue-500" target="_blank" > ChatGPT风口软件变现</a>',
+      vipType: '-',
+      tokenName: '-',
+      tokenValue: '-',
+      endDate: '-',
     },
   }
 }
