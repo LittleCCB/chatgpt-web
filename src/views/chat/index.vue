@@ -3,15 +3,20 @@ import type { Ref } from 'vue'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
-import { NAutoComplete, NButton, NInput, useDialog, useMessage } from 'naive-ui'
+import {
+  NAutoComplete,
+  NButton,
+  NInput,
+  useDialog,
+  useMessage,
+} from 'naive-ui'
 import html2canvas from 'html2canvas'
 import { Message } from './components'
 import { useScroll } from './hooks/useScroll'
 import { useChat } from './hooks/useChat'
-import { useCopyCode } from './hooks/useCopyCode'
 import { useUsingContext } from './hooks/useUsingContext'
 import HeaderComponent from './components/Header/index.vue'
-import { HoverButton, SvgIcon, QrcodeDialog } from '@/components/common'
+import { HoverButton, QrcodeDialog, SvgIcon } from '@/components/common'
 import { useBasicLayout } from '@/hooks/useBasicLayout'
 import { useChatStore, usePromptStore } from '@/store'
 import { fetchChatAPIProcess } from '@/api'
@@ -27,10 +32,9 @@ const ms = useMessage()
 
 const chatStore = useChatStore()
 
-useCopyCode()
-
 const { isMobile } = useBasicLayout()
-const { addChat, updateChat, updateChatSome, getChatByUuidAndIndex } = useChat()
+const { addChat, updateChat, updateChatSome, getChatByUuidAndIndex }
+  = useChat()
 const { scrollRef, scrollToBottom, scrollToBottomIfAtBottom } = useScroll()
 const { usingContext, toggleUsingContext } = useUsingContext()
 
@@ -70,40 +74,36 @@ async function onConversation() {
 
   controller = new AbortController()
 
-  addChat(
-    +uuid,
-    {
-      dateTime: new Date().toLocaleString(),
-      text: message,
-      inversion: true,
-      error: false,
-      conversationOptions: null,
-      requestOptions: { prompt: message, options: null },
-    },
-  )
+  addChat(+uuid, {
+    dateTime: new Date().toLocaleString(),
+    text: message,
+    inversion: true,
+    error: false,
+    conversationOptions: null,
+    requestOptions: { prompt: message, options: null },
+  })
   scrollToBottom()
 
   loading.value = true
   prompt.value = ''
 
   let options: Chat.ConversationRequest = {}
-  const lastContext = conversationList.value[conversationList.value.length - 1]?.conversationOptions
+  const lastContext
+    = conversationList.value[conversationList.value.length - 1]
+      ?.conversationOptions
 
   if (lastContext && usingContext.value)
     options = { ...lastContext }
 
-  addChat(
-    +uuid,
-    {
-      dateTime: new Date().toLocaleString(),
-      text: '',
-      loading: true,
-      inversion: false,
-      error: false,
-      conversationOptions: null,
-      requestOptions: { prompt: message, options: { ...options } },
-    },
-  )
+  addChat(+uuid, {
+    dateTime: new Date().toLocaleString(),
+    text: '',
+    loading: true,
+    inversion: false,
+    error: false,
+    conversationOptions: null,
+    requestOptions: { prompt: message, options: { ...options } },
+  })
   scrollToBottom()
 
   try {
@@ -117,27 +117,32 @@ async function onConversation() {
           const xhr = event.target
           const { responseText } = xhr
           // Always process the final line
-          const lastIndex = responseText.lastIndexOf('\n', responseText.length - 2)
+          const lastIndex = responseText.lastIndexOf(
+            'data:',
+            responseText.length - 1,
+          )
           let chunk = responseText
           if (lastIndex !== -1)
-            chunk = responseText.substring(lastIndex)
+            chunk = responseText.substring(lastIndex + 5)
           try {
-            const data = JSON.parse(chunk)
-            updateChat(
-              +uuid,
-              dataSources.value.length - 1,
-              {
-                dateTime: new Date().toLocaleString(),
-                text: lastText + (data.text ?? ''),
-                inversion: false,
-                error: false,
-                loading: true,
-                conversationOptions: { conversationId: data.conversationId, parentMessageId: data.id },
-                requestOptions: { prompt: message, options: { ...options } },
+            const data = JSON.parse(JSON.parse(chunk))
+            updateChat(+uuid, dataSources.value.length - 1, {
+              dateTime: new Date().toLocaleString(),
+              text: lastText + (data.text ?? ''),
+              inversion: false,
+              error: false,
+              loading: true,
+              conversationOptions: {
+                conversationId: data.conversationId,
+                parentMessageId: data.id,
               },
-            )
+              requestOptions: { prompt: message, options: { ...options } },
+            })
 
-            if (openLongReply && data.detail.choices[0].finish_reason === 'length') {
+            if (
+              openLongReply
+              && data.detail.choices[0].finish_reason === 'length'
+            ) {
               options.parentMessageId = data.id
               lastText = data.text
               message = ''
@@ -160,45 +165,36 @@ async function onConversation() {
     const errorMessage = error?.message ?? t('common.wrong')
 
     if (error.message === 'canceled') {
-      updateChatSome(
-        +uuid,
-        dataSources.value.length - 1,
-        {
-          loading: false,
-        },
-      )
+      updateChatSome(+uuid, dataSources.value.length - 1, {
+        loading: false,
+      })
       scrollToBottomIfAtBottom()
       return
     }
 
-    const currentChat = getChatByUuidAndIndex(+uuid, dataSources.value.length - 1)
+    const currentChat = getChatByUuidAndIndex(
+      +uuid,
+      dataSources.value.length - 1,
+    )
 
     if (currentChat?.text && currentChat.text !== '') {
-      updateChatSome(
-        +uuid,
-        dataSources.value.length - 1,
-        {
-          text: `${currentChat.text}\n[${errorMessage}]`,
-          error: false,
-          loading: false,
-        },
-      )
+      updateChatSome(+uuid, dataSources.value.length - 1, {
+        text: `${currentChat.text}\n[${errorMessage}]`,
+        error: false,
+        loading: false,
+      })
       return
     }
 
-    updateChat(
-      +uuid,
-      dataSources.value.length - 1,
-      {
-        dateTime: new Date().toLocaleString(),
-        text: errorMessage,
-        inversion: false,
-        error: true,
-        loading: false,
-        conversationOptions: null,
-        requestOptions: { prompt: message, options: { ...options } },
-      },
-    )
+    updateChat(+uuid, dataSources.value.length - 1, {
+      dateTime: new Date().toLocaleString(),
+      text: errorMessage,
+      inversion: false,
+      error: true,
+      loading: false,
+      conversationOptions: null,
+      requestOptions: { prompt: message, options: { ...options } },
+    })
     scrollToBottomIfAtBottom()
   }
   finally {
@@ -248,12 +244,15 @@ async function onRegenerate(index: number) {
           const xhr = event.target
           const { responseText } = xhr
           // Always process the final line
-          const lastIndex = responseText.lastIndexOf('\n', responseText.length - 2)
+          const lastIndex = responseText.lastIndexOf(
+            'data:',
+            responseText.length - 1,
+          )
           let chunk = responseText
           if (lastIndex !== -1)
-            chunk = responseText.substring(lastIndex)
+            chunk = responseText.substring(lastIndex + 5)
           try {
-            const data = JSON.parse(chunk)
+            const data = JSON.parse(JSON.parse(chunk))
             updateChat(
               +uuid,
               index,
@@ -268,7 +267,23 @@ async function onRegenerate(index: number) {
               },
             )
 
-            if (openLongReply && data.detail.choices[0].finish_reason === 'length') {
+            updateChat(+uuid, index, {
+              dateTime: new Date().toLocaleString(),
+              text: lastText + (data.text ?? ''),
+              inversion: false,
+              error: false,
+              loading: true,
+              conversationOptions: {
+                conversationId: data.conversationId,
+                parentMessageId: data.id,
+              },
+              requestOptions: { prompt: message, ...options },
+            })
+
+            if (
+              openLongReply
+              && data.detail.choices[0].finish_reason === 'length'
+            ) {
               options.parentMessageId = data.id
               lastText = data.text
               message = ''
@@ -286,13 +301,9 @@ async function onRegenerate(index: number) {
   }
   catch (error: any) {
     if (error.message === 'canceled') {
-      updateChatSome(
-        +uuid,
-        index,
-        {
-          loading: false,
-        },
-      )
+      updateChatSome(+uuid, index, {
+        loading: false,
+      })
       return
     }
 
@@ -416,12 +427,16 @@ function handleStop() {
 // 理想状态下其实应该是key作为索引项,但官方的renderOption会出现问题，所以就需要value反renderLabel实现
 const searchOptions = computed(() => {
   if (prompt.value.startsWith('/')) {
-    return promptTemplate.value.filter((item: { key: string }) => item.key.toLowerCase().includes(prompt.value.substring(1).toLowerCase())).map((obj: { value: any }) => {
-      return {
-        label: obj.value,
-        value: obj.value,
-      }
-    })
+    return promptTemplate.value
+      .filter((item: { key: string }) =>
+        item.key.toLowerCase().includes(prompt.value.substring(1).toLowerCase()),
+      )
+      .map((obj: { value: any }) => {
+        return {
+          label: obj.value,
+          value: obj.value,
+        }
+      })
   }
   else {
     return []
@@ -434,6 +449,7 @@ const renderOption = (option: { label: string }) => {
     if (i.value === option.label)
       return [i.key]
   }
+
   return []
 }
 
@@ -449,8 +465,17 @@ const buttonDisabled = computed(() => {
 
 const footerClass = computed(() => {
   let classes = ['p-4']
-  if (isMobile.value)
-    classes = ['sticky', 'left-0', 'bottom-0', 'right-0', 'p-2', 'pr-3', 'overflow-hidden']
+  if (isMobile.value) {
+    classes = [
+      'sticky',
+      'left-0',
+      'bottom-0',
+      'right-0',
+      'p-2',
+      'pr-3',
+      'overflow-hidden',
+    ]
+  }
   return classes
 })
 
@@ -475,16 +500,25 @@ onUnmounted(() => {
       @toggle-using-context="toggleUsingContext"
     />
     <main class="flex-1 overflow-hidden">
-      <div id="scrollRef" ref="scrollRef" class="h-full overflow-hidden overflow-y-auto">
+      <div
+        id="scrollRef"
+        ref="scrollRef"
+        class="h-full overflow-hidden overflow-y-auto"
+      >
         <div
           id="image-wrapper"
           class="w-full max-w-screen-xl m-auto dark:bg-[#101014]"
           :class="[isMobile ? 'p-2' : 'p-4']"
         >
           <template v-if="!dataSources.length">
-            <div class="flex items-center justify-center mt-4 text-center text-neutral-300">
+            <div
+              class="flex items-center justify-center mt-4 text-center text-neutral-300"
+            >
               <SvgIcon icon="ri:bubble-chart-fill" class="mr-2 text-3xl" />
-              <span>您好，欢迎使用ChatGPT，游客身份限制提问频率，<a href="#/register" class="text-blue-500" target="_blank" >注册请点这里</a>，如果你已经有账号，请<a href="#/login" class="text-blue-500" target="_blank" >点击这里</a>或者点击头像登录~~</span>
+              <span>Aha~本站使用ChatGPT-3.5模型,欢迎分享给你的朋友(<a
+                href="http://ai.yscxy.net"
+                target="_blank"
+              >http://ai.yscxy.net</a>)</span>
             </div>
           </template>
           <template v-else>
@@ -527,11 +561,21 @@ onUnmounted(() => {
             </span>
           </HoverButton>
           <HoverButton v-if="!isMobile" @click="toggleUsingContext">
-            <span class="text-xl" :class="{ 'text-[#4b9e5f]': usingContext, 'text-[#a8071a]': !usingContext }">
+            <span
+              class="text-xl"
+              :class="{
+                'text-[#4b9e5f]': usingContext,
+                'text-[#a8071a]': !usingContext,
+              }"
+            >
               <SvgIcon icon="ri:chat-history-line" />
             </span>
           </HoverButton>
-          <NAutoComplete v-model:value="prompt" :options="searchOptions" :render-label="renderOption">
+          <NAutoComplete
+            v-model:value="prompt"
+            :options="searchOptions"
+            :render-label="renderOption"
+          >
             <template #default="{ handleInput, handleBlur, handleFocus }">
               <NInput
                 ref="inputRef"
@@ -546,7 +590,11 @@ onUnmounted(() => {
               />
             </template>
           </NAutoComplete>
-          <NButton type="primary" :disabled="buttonDisabled" @click="handleSubmit">
+          <NButton
+            type="primary"
+            :disabled="buttonDisabled"
+            @click="handleSubmit"
+          >
             <template #icon>
               <span class="dark:text-black">
                 <SvgIcon icon="ri:send-plane-fill" />
@@ -556,6 +604,6 @@ onUnmounted(() => {
         </div>
       </div>
     </footer>
-    <QrcodeDialog></QrcodeDialog>
+    <QrcodeDialog />
   </div>
 </template>

@@ -6,6 +6,10 @@ export interface UserInfo {
   avatar: string
   name: string
   description: string
+  vipType: String
+  tokenName: String
+  tokenValue: String
+  endDate: String
 }
 
 export interface UserState {
@@ -15,9 +19,13 @@ export interface UserState {
 export function defaultSetting(): UserState {
   return {
     userInfo: {
-      avatar: 'https://phpimg.ziroom.com/95c9641d-2559-425a-8b5a-d787f51a6d24.jpg',
-      name: 'LittleBai',
-      description: '<a href="weixin://qr/gh_e011b00aab62" class="text-blue-500" target="_blank" >进群一起玩耍</a>',
+      avatar: 'https://oss-chatgpt.oss-cn-beijing.aliyuncs.com/attr/%E5%A4%B4%E5%83%8F.jpg',
+      name: '程序员小野',
+      description: '星球： <a href="https://t.zsxq.com/0c8ZrSR0z" class="text-blue-500" target="_blank" > ChatGPT风口软件变现</a>',
+      vipType: '-',
+      tokenName: '-',
+      tokenValue: '-',
+      endDate: '-',
     },
   }
 }
