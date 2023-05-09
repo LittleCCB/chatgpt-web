@@ -1,60 +1,66 @@
 <script setup lang='ts'>
-import type { CSSProperties } from 'vue'
-import { computed, ref, watch } from 'vue'
-import { NButton, NLayoutSider } from 'naive-ui'
-import List from './List.vue'
-import Footer from './Footer.vue'
-import { useAppStore, useChatStore } from '@/store'
-import { useBasicLayout } from '@/hooks/useBasicLayout'
-import { PromptStore } from '@/components/common'
+import type { CSSProperties } from "vue";
+import { computed, ref, watch } from "vue";
+import { NButton, NLayoutSider } from "naive-ui";
+import List from "./List.vue";
+import Footer from "./Footer.vue";
+import { useAppStore, useChatStore, useVipStore } from "@/store";
+import { useBasicLayout } from "@/hooks/useBasicLayout";
+import { PromptStore } from "@/components/common";
 
-const appStore = useAppStore()
-const chatStore = useChatStore()
+const appStore = useAppStore();
+const chatStore = useChatStore();
+const vipStore = useVipStore();
 
-const { isMobile } = useBasicLayout()
-const show = ref(false)
+const { isMobile } = useBasicLayout();
+const show = ref(false);
 
-const collapsed = computed(() => appStore.siderCollapsed)
+const collapsed = computed(() => appStore.siderCollapsed);
 
 function handleAdd() {
-  chatStore.addHistory({ title: 'New Chat', uuid: Date.now(), isEdit: false })
-  if (isMobile.value)
-    appStore.setSiderCollapsed(true)
+  chatStore.addHistory({ title: "New Chat", uuid: Date.now(), isEdit: false });
+  if (isMobile.value) appStore.setSiderCollapsed(true);
 }
 
 function handleUpdateCollapsed() {
-  appStore.setSiderCollapsed(!collapsed.value)
+  appStore.setSiderCollapsed(!collapsed.value);
 }
 
 const getMobileClass = computed<CSSProperties>(() => {
   if (isMobile.value) {
     return {
-      position: 'fixed',
+      position: "fixed",
       zIndex: 50,
-    }
+    };
   }
-  return {}
-})
+  return {};
+});
 
 const mobileSafeArea = computed(() => {
   if (isMobile.value) {
     return {
-      paddingBottom: 'env(safe-area-inset-bottom)',
-    }
+      paddingBottom: "env(safe-area-inset-bottom)",
+    };
   }
-  return {}
-})
+  return {};
+});
+
+const vipModalShow = () => {
+  vipStore.updateVipInfo({
+    show: true,
+  });
+};
 
 watch(
   isMobile,
   (val) => {
-    appStore.setSiderCollapsed(val)
+    appStore.setSiderCollapsed(val);
   },
   {
     immediate: true,
-    flush: 'post',
-  },
-)
+    flush: "post",
+  }
+);
 </script>
 
 <template>
@@ -73,26 +79,38 @@ watch(
       <main class="flex flex-col flex-1 min-h-0">
         <div class="p-4">
           <NButton dashed block @click="handleAdd">
-            {{ $t('chat.newChatButton') }}
+            {{ $t("chat.newChatButton") }}
           </NButton>
         </div>
         <div class="flex-1 min-h-0 pb-4 overflow-hidden">
           <List />
         </div>
-        <div class="p-4 pb-0" style="text-align: center;">
-          <a href="https://github.com/LittleCCB/wx-bot-client">ChatGPT接入微信工具开源项目</a>
+        <!-- <div class="p-4 pb-0" style="text-align: center;">
+          <a href="javascript:;" @click="vipModalShow">成为VIP</a>
+        </div> -->
+        <div class="p-4 pb-0" style="text-align: center">
+          <a href="javascript:;" @click="show = true">{{
+            $t("store.siderButton")
+          }}</a>
+        </div>
+        <div class="p-4 pb-0" style="text-align: center">
+          <a href="https://github.com/LittleCCB/wx-bot-client"
+            >ChatGPT接入微信工具开源项目</a
+          >
         </div>
         <div class="p-4">
-          <NButton block @click="show = true">
-            {{ $t('store.siderButton') }}
-          </NButton>
+          <NButton block @click="vipModalShow"> 成为VIP </NButton>
         </div>
       </main>
       <Footer />
     </div>
   </NLayoutSider>
   <template v-if="isMobile">
-    <div v-show="!collapsed" class="fixed inset-0 z-40 bg-black/40" @click="handleUpdateCollapsed" />
+    <div
+      v-show="!collapsed"
+      class="fixed inset-0 z-40 bg-black/40"
+      @click="handleUpdateCollapsed"
+    />
   </template>
   <PromptStore v-model:visible="show" />
 </template>

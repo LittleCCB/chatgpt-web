@@ -45,7 +45,7 @@ async function handleSubmit() {
   try {
     await validateForm()
     // 提交注册表单的逻辑
-    const { data } = await login(formValue.value)
+    const { data } = await login(formValue.value);
     if (data.success) {
       const baseUserData = data.data.baseUserData
       const loginToken = data.data.loginToken
@@ -56,6 +56,7 @@ async function handleSubmit() {
         vipType: baseUserData.vipType,
         tokenName: loginToken.tokenName,
         tokenValue: loginToken.tokenValue,
+        vipTypeDesc: userIdentityInfo.vipTypeDesc,
         endDate: userIdentityInfo.endDate,
       }
       userStore.updateUserInfo(newUserInfo)
@@ -94,6 +95,7 @@ async function handleSubmit() {
           placeholder="请输入密码"
         />
       </NFormItem>
+      <NButton class="jump" text type="primary" @click="router.push('/register')">没有账号，去注册</NButton>
       <NFormItem style="text-align: center">
         <NButton
           style="width: 100%"
@@ -128,5 +130,8 @@ async function handleSubmit() {
     border-radius: 8%;
     overflow: hidden;
   }
+}
+.jump {
+  transform: translateY(-6px);
 }
 </style>

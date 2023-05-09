@@ -9,7 +9,10 @@ export interface UserInfo {
   vipType: String
   tokenName: String
   tokenValue: String
+  vipTypeDesc: String
   endDate: String
+  email: String
+  phone: String
 }
 
 export interface UserState {
@@ -23,9 +26,12 @@ export function defaultSetting(): UserState {
       name: '程序员小野',
       description: '星球： <a href="https://t.zsxq.com/0c8ZrSR0z" class="text-blue-500" target="_blank" > ChatGPT风口软件变现</a>',
       vipType: '-',
+      vipTypeDesc: '还没有登录哦~',
+      email: '-',
+      phone: '-',
       tokenName: '-',
       tokenValue: '-',
-      endDate: '-',
+      endDate: '还没有登录哦~',
     },
   }
 }

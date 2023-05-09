@@ -16,9 +16,10 @@ import { useScroll } from './hooks/useScroll'
 import { useChat } from './hooks/useChat'
 import { useUsingContext } from './hooks/useUsingContext'
 import HeaderComponent from './components/Header/index.vue'
-import { HoverButton, QrcodeDialog, SvgIcon } from '@/components/common'
+import { HoverButton, SvgIcon, QrcodeDialog } from '@/components/common'
+import { VipModal } from '@/components/vip';
 import { useBasicLayout } from '@/hooks/useBasicLayout'
-import { useChatStore, usePromptStore } from '@/store'
+import { useChatStore, usePromptStore, useVipStore } from '@/store'
 import { fetchChatAPIProcess } from '@/api'
 import { t } from '@/locales'
 
@@ -49,6 +50,11 @@ const inputRef = ref<Ref | null>(null)
 
 // 添加PromptStore
 const promptStore = usePromptStore()
+
+// 添加vipStore
+const vipStore = useVipStore()
+
+const vipInfo = computed(() => vipStore.vipInfo)
 
 // 使用storeToRefs，保证store修改后，联想部分能够重新渲染
 const { promptList: promptTemplate } = storeToRefs<any>(promptStore)
@@ -604,6 +610,10 @@ onUnmounted(() => {
         </div>
       </div>
     </footer>
-    <QrcodeDialog />
+    <QrcodeDialog></QrcodeDialog>
+    <VipModal 
+      v-if="vipInfo.show"
+      :show="vipInfo.show"
+    />
   </div>
 </template>

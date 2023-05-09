@@ -42,7 +42,7 @@ export default defineConfig((env) => {
           rewrite: path => path.replace('/api/', '/'),
         },
         '/user': {
-          target: 'http://localhost:6003',
+          target: 'http://vip.yscxy.net/api',
           changeOrigin: true, // 允许跨域
           rewrite: path => path.replace('/user/', '/'),
 

@@ -125,6 +125,7 @@ async function handleSubmit() {
           </NButton>
         </div>
       </NFormItem>
+      <NButton class="jump" text type="primary" @click="router.push('/login')">已有账号，去登陆</NButton>
       <NFormItem style="text-align: center">
         <NButton
           style="width: 100%"
@@ -164,5 +165,8 @@ async function handleSubmit() {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.jump {
+  transform: translateY(-6px);
 }
 </style>

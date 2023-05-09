@@ -24,6 +24,10 @@ const avatar = ref(userInfo.value.avatar ?? '')
 
 const name = ref(userInfo.value.name ?? '')
 
+const vipTypeDesc = ref(userInfo.value.vipTypeDesc ?? '')
+
+const endDate = ref(userInfo.value.endDate ?? '')
+
 const description = ref(userInfo.value.description ?? '')
 
 const language = computed({
@@ -214,11 +218,23 @@ function handleImportButtonClick(): void {
           />
         </div>
       </div>
-      <div class="flex items-center space-x-4">
+      <!-- <div class="flex items-center space-x-4">
         <span class="flex-shrink-0 w-[100px]">{{ $t('setting.resetUserInfo') }}</span>
         <NButton size="small" @click="handleReset">
           {{ $t('common.reset') }}
         </NButton>
+      </div> -->
+      <div class="flex items-center space-x-4">
+        <span class="flex-shrink-0 w-[100px]">{{ $t('setting.vipTypeDesc') }}</span>
+        <div class="w-[200px]">
+          <NInput v-model:value="vipTypeDesc" placeholder="" />
+        </div>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="flex-shrink-0 w-[100px]">{{ $t('setting.endDate') }}</span>
+        <div class="w-[200px]">
+          <NInput v-model:value="endDate" placeholder="" />
+        </div>
       </div>
     </div>
   </div>
