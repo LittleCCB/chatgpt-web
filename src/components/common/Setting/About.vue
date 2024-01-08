@@ -1,8 +1,8 @@
 <script setup lang='ts'>
 import { computed, onMounted, ref } from 'vue'
 import { NSpin } from 'naive-ui'
+import pkg from '../../../../package.json'
 import { fetchChatConfig } from '@/api'
-import pkg from '@/../package.json'
 import { useAuthStore } from '@/store'
 
 interface ConfigState {
@@ -46,7 +46,11 @@ onMounted(() => {
       </h2>
       <div class="p-2 space-y-2 rounded-md bg-neutral-100 dark:bg-neutral-700">
         <p>
+<<<<<<< HEAD
           此项目搭建教程,欢迎点击加入知识星球获取：
+=======
+          {{ $t("setting.openSource") }}
+>>>>>>> main
           <a
             class="text-blue-600 dark:text-blue-500"
             href="https://t.zsxq.com/0c8ZrSR0z"
@@ -59,6 +63,13 @@ onMounted(() => {
           >
             教程已经更新到星球哦，先到先得！
           </a>
+<<<<<<< HEAD
+=======
+          {{ $t("setting.freeMIT") }}
+        </p>
+        <p>
+          {{ $t("setting.stars") }}
+>>>>>>> main
         </p>
       </div>
       <p>{{ $t("setting.api") }}：{{ config?.apiModel ?? '-' }}</p>

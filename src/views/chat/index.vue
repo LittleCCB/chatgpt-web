@@ -101,6 +101,7 @@ async function onConversation() {
   if (lastContext && usingContext.value)
     options = { ...lastContext }
 
+<<<<<<< HEAD
   addChat(+uuid, {
     dateTime: new Date().toLocaleString(),
     text: '',
@@ -110,6 +111,20 @@ async function onConversation() {
     conversationOptions: null,
     requestOptions: { prompt: message, options: { ...options } },
   })
+=======
+  addChat(
+    +uuid,
+    {
+      dateTime: new Date().toLocaleString(),
+      text: t('chat.thinking'),
+      loading: true,
+      inversion: false,
+      error: false,
+      conversationOptions: null,
+      requestOptions: { prompt: message, options: { ...options } },
+    },
+  )
+>>>>>>> main
   scrollToBottom()
 
   try {
@@ -503,7 +518,7 @@ onUnmounted(() => {
       v-if="isMobile"
       :using-context="usingContext"
       @export="handleExport"
-      @toggle-using-context="toggleUsingContext"
+      @handle-clear="handleClear"
     />
     <main class="flex-1 overflow-hidden">
       <div
@@ -521,10 +536,14 @@ onUnmounted(() => {
               class="flex items-center justify-center mt-4 text-center text-neutral-300"
             >
               <SvgIcon icon="ri:bubble-chart-fill" class="mr-2 text-3xl" />
+<<<<<<< HEAD
               <span>Aha~本站使用ChatGPT-3.5模型,欢迎分享给你的朋友(<a
                 href="http://ai.yscxy.net"
                 target="_blank"
               >http://ai.yscxy.net</a>)</span>
+=======
+              <span>{{ t('chat.newChatTitle') }}</span>
+>>>>>>> main
             </div>
           </template>
           <template v-else>
@@ -545,7 +564,7 @@ onUnmounted(() => {
                   <template #icon>
                     <SvgIcon icon="ri:stop-circle-line" />
                   </template>
-                  Stop Responding
+                  {{ t('common.stopResponding') }}
                 </NButton>
               </div>
             </div>
@@ -556,7 +575,7 @@ onUnmounted(() => {
     <footer :class="footerClass">
       <div class="w-full max-w-screen-xl m-auto">
         <div class="flex items-center justify-between space-x-2">
-          <HoverButton @click="handleClear">
+          <HoverButton v-if="!isMobile" @click="handleClear">
             <span class="text-xl text-[#4f555e] dark:text-white">
               <SvgIcon icon="ri:delete-bin-line" />
             </span>
@@ -566,6 +585,7 @@ onUnmounted(() => {
               <SvgIcon icon="ri:download-2-line" />
             </span>
           </HoverButton>
+<<<<<<< HEAD
           <HoverButton v-if="!isMobile" @click="toggleUsingContext">
             <span
               class="text-xl"
@@ -574,6 +594,10 @@ onUnmounted(() => {
                 'text-[#a8071a]': !usingContext,
               }"
             >
+=======
+          <HoverButton @click="toggleUsingContext">
+            <span class="text-xl" :class="{ 'text-[#4b9e5f]': usingContext, 'text-[#a8071a]': !usingContext }">
+>>>>>>> main
               <SvgIcon icon="ri:chat-history-line" />
             </span>
           </HoverButton>

@@ -84,10 +84,17 @@ function handleRegenerate() {
 async function handleCopy() {
   try {
     await copyToClip(props.text || '')
+<<<<<<< HEAD
     message.success('复制成功')
   }
   catch {
     message.error('复制失败')
+=======
+    message.success(t('chat.copied'))
+  }
+  catch {
+    message.error(t('chat.copyFailed'))
+>>>>>>> main
   }
 }
 </script>
