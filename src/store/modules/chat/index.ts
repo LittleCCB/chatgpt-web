@@ -189,9 +189,27 @@ export const useChatStore = defineStore('chat-store', {
     },
 
     async reloadRoute(uuid?: number) {
-      this.recordState()
-      await router.push({ name: 'Chat', params: { uuid } })
+      this.recordState();
+    
+      // 获取当前路由的查询参数
+      const currentQuery = this.$route.query;
+    
+      // 准备路由对象
+      const routeData = {
+        name: 'Chat',
+        query: currentQuery,
+        params: {},
+      };
+    
+      // 如果 uuid 有效，则添加到参数中
+      if (uuid !== undefined && uuid !== null) {
+        routeData.params = { uuid };
+      }
+    
+      // 跳转到新路由
+      await router.push(routeData);
     },
+    
 
     recordState() {
       setLocalState(this.$state)

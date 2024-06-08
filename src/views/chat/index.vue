@@ -32,6 +32,8 @@ const { scrollRef, scrollToBottom, scrollToBottomIfAtBottom } = useScroll()
 const { usingContext, toggleUsingContext } = useUsingContext()
 
 const { uuid } = route.params as { uuid: string }
+const autosend = route.query.autosend as string || null;
+const sendtype = route.query.sendtype as string || null;
 
 const dataSources = computed(() => chatStore.getChatByUuid(+uuid))
 const conversationList = computed(() => dataSources.value.filter(item => (!item.inversion && !!item.conversationOptions)))
@@ -451,10 +453,22 @@ const footerClass = computed(() => {
   return classes
 })
 
+const toAutoSend = () => {
+  if (autosend && sendtype === 'interview') {
+    prompt.value = autosend
+    console.log('start');
+    
+    onConversation()
+  }
+}
+
 onMounted(() => {
   scrollToBottom()
   if (inputRef.value && !isMobile.value)
     inputRef.value?.focus()
+
+  if (autosend) 
+    toAutoSend()
 })
 
 onUnmounted(() => {

@@ -12,7 +12,17 @@ const appStore = useAppStore()
 const chatStore = useChatStore()
 const authStore = useAuthStore()
 
-router.replace({ name: 'Chat', params: { uuid: chatStore.active } })
+// 假设 chatStore.active 已经定义
+// 获取当前路由的查询参数
+const currentQuery = router.currentRoute.value.query;
+
+// 使用 router.replace 替换路由，同时保留查询参数
+router.replace({
+  name: 'Chat',
+  params: { uuid: chatStore.active },
+  query: currentQuery // 包含当前的查询参数
+});
+
 
 const { isMobile } = useBasicLayout()
 
